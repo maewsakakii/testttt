@@ -34,13 +34,18 @@
     <div id="root"></div>
     <script type="text/babel">
         const { useState, useMemo, useRef, useEffect } = React;
-
+        
         // -------------------------------------------------------------------------
         // 🔧 CONFIGURATION & DATA
         // -------------------------------------------------------------------------
-        const REPAIR_API_URL = "https://script.google.com/macros/s/AKfycbwuBvhehF8FzL0kpdZGt0ptRQsgiWWkQwDPzDRJCSiC2AtcBaN4bBVNFPI4jx4nyQnv2A/exec"; 
-        const PAPER_API_URL = "https://script.google.com/macros/s/AKfycbwuBvhehF8FzL0kpdZGt0ptRQsgiWWkQwDPzDRJCSiC2AtcBaN4bBVNFPI4jx4nyQnv2A/exec"; 
-        const IMGBB_API_KEY = "271b3b78bf691990f3b919fc89fa10d4"; 
+        // 👇 เอา URL ที่ได้จากการ Deploy (Web App URL) มาใส่ตรงนี้ครับ
+        const BASE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwqXtTybDVDPh7E64O3-6wg2doE_ffa-sV-a1KLCPwqyS0274bHJQECdajyASYLGhOz/exec"; 
+
+        // ไม่ต้องแก้ 2 บรรทัดล่างนี้ (ระบบจะเติม ?type=paper ให้เอง)
+        const REPAIR_API_URL = BASE_SCRIPT_URL; 
+        const PAPER_API_URL = BASE_SCRIPT_URL + "?type=paper"; 
+
+        const IMGBB_API_KEY = "271b3b78bf691990f3b919fc89fa10d4";
         
         const DEPA_BLUE = "#002D56";
         const DEPA_YELLOW = "#FFD600";
@@ -433,3 +438,4 @@
     </script>
 </body>
 </html>
+
