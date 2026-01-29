@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>depa Service </title>
+    <title>depa Service Portal</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
@@ -38,28 +38,21 @@
         // -------------------------------------------------------------------------
         // 🔧 CONFIGURATION & DATA
         // -------------------------------------------------------------------------
-        // 👇 เอา URL ที่ได้จากการ Deploy (Web App URL) มาใส่ตรงนี้ครับ
         const BASE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxjB1mZXljd7Rod0iXCaia48ayNjEio63WVFKr7GuiCYz1db99LS_AcKTFRo8xkYxny3Q/exec"; 
-
-        // ไม่ต้องแก้ 2 บรรทัดล่างนี้ (ระบบจะเติม ?type=paper ให้เอง)
         const REPAIR_API_URL = BASE_SCRIPT_URL; 
         const PAPER_API_URL = BASE_SCRIPT_URL + "?type=paper"; 
-
         const IMGBB_API_KEY = "271b3b78bf691990f3b919fc89fa10d4";
         
         const DEPA_BLUE = "#002D56";
         const DEPA_YELLOW = "#FFD600";
 
-        // ✅ แก้ไขข้อ 5: เพิ่มแผนกใหม่ใน Group A (40 รีม)
         const DEPT_GROUP_A = [
             "ฝ่ายส่งเสริมแพลตฟอร์มและบริการดิจิทัล", "ฝ่ายส่งเสริมเมืองอัจฉริยะ", "สถาบันไอโอทีและนวัตกรรมดิจิทัล",
             "ฝ่ายส่งเสริมการพัฒนากำลังคนดิจิทัล", "ฝ่ายส่งเสริมอุตสาหกรรมดิจิทัล", "ส่วนส่งเสริมการตลาด",
             "ส่วนส่งเสริมการลงทุน", "สถาบันส่งเสริมวิสาหกิจดิจิทัลเริ่มต้น", "ฝ่ายส่งเสริมและสนับสนุนการพัฒนาการเกษตรสมัยใหม่",
             "ฝ่ายส่งเสริมและสนับสนุนการพัฒนาชุมชน", "ฝ่ายส่งเสริมและสนับสนุนการพัฒนาอุตสาหกรรมและธุรกิจ", "ส่วนเทคโนโลยีดิจิทัลและสารสนเทศ",
             "ส่วนบริหารและพัฒนาบุคคล", "ฝ่ายนโยบายและยุทธศาสตร์", "ฝ่ายส่งเสริมและสนับสนุนการพัฒนาคุณภาพชีวิตและความมั่นคง",
-            "สาขาภาคกลางตอนกลาง",
-            "แผนกบริหารไทยแลนด์ดิจิทัลวัลเลย์และกิจการ", // New
-            "แผนกบริหารการลงทุนและกองทุน" // New
+            "สาขาภาคกลางตอนกลาง", "แผนกบริหารไทยแลนด์ดิจิทัลวัลเลย์และกิจการ", "แผนกบริหารการลงทุนและกองทุน"
         ];
         const DEPT_GROUP_B = [
             "ส่วนกฎหมาย", "ส่วนประชาสัมพันธ์และสื่อสารองค์กร", "ส่วนเลขานุการและสารบรรณ",
@@ -70,6 +63,45 @@
         const REPAIR_DEPTS = [...ALL_DEPTS, "แม่บ้าน"];
 
         const QUOTA_LIMITS = { GROUP_A: 40, GROUP_B_TOTAL: 400 };
+
+        // 📦 STOCK DATA FROM PDF
+        const INITIAL_STOCK_DATA = [
+            { id: 1, name: 'ถ่านอัลคาไลน์ PANASONIC AAA (แพ็ก 20)', total: 40, remaining: 0, unit: 'ก้อน', category: 'สิ้นเปลือง' },
+            { id: 2, name: 'ถ่านอัลคาไลน์ PANASONIC AA (แพ็ก 20)', total: 40, remaining: 38, unit: 'ก้อน', category: 'สิ้นเปลือง' },
+            { id: 3, name: 'ซิลิโคนชนิดไร้กรด TOA HP (สีดำ)', total: 10, remaining: 1, unit: 'หลอด', category: 'วัสดุ' },
+            { id: 4, name: 'ปืนยิงซิลิโคน DEXZON', total: 1, remaining: 1, unit: 'อัน', category: 'เครื่องมือ' },
+            { id: 5, name: 'กาวยาแนว จระเข้ (สีขาวไข่มุก)', total: 5, remaining: 1, unit: 'ถุง', category: 'วัสดุ' },
+            { id: 6, name: 'เกรียงโป๊ว HACHI 6 นิ้ว', total: 1, remaining: 1, unit: 'อัน', category: 'เครื่องมือ' },
+            { id: 7, name: 'เครื่องเป่าลม HYUNDAI 800W', total: 1, remaining: 1, unit: 'เครื่อง', category: 'ไฟฟ้า' },
+            { id: 8, name: 'เครื่องฉีดน้ำ PUMPKIN 125 Bar', total: 1, remaining: 1, unit: 'เครื่อง', category: 'ไฟฟ้า' },
+            { id: 9, name: 'สว่านโรตารี่ BOSCH 24mm', total: 1, remaining: 1, unit: 'เครื่อง', category: 'ไฟฟ้า' },
+            { id: 10, name: 'เครื่องตรวจเช็คเต้ารับไฟฟ้า', total: 1, remaining: 1, unit: 'เครื่อง', category: 'ไฟฟ้า' },
+            { id: 11, name: 'สายไฟ THW 1x10', total: 1, remaining: 1, unit: 'ม้วน', category: 'วัสดุ' },
+            { id: 12, name: 'คีมล็อกปากตรง SOLO 10 นิ้ว', total: 1, remaining: 1, unit: 'อัน', category: 'เครื่องมือ' },
+            { id: 13, name: 'คีมปอกสายไฟ MATALL 6 นิ้ว', total: 1, remaining: 1, unit: 'อัน', category: 'เครื่องมือ' },
+            { id: 14, name: 'ค้อนหงอนด้ามไฟเบอร์ HACHI', total: 1, remaining: 1, unit: 'อัน', category: 'เครื่องมือ' },
+            { id: 15, name: 'ค้อนเล็ก', total: 1, remaining: 1, unit: 'อัน', category: 'เครื่องมือ' },
+            { id: 16, name: 'ค้อนยาง', total: 1, remaining: 1, unit: 'อัน', category: 'เครื่องมือ' },
+            { id: 17, name: 'คีมคอม้า MATALL PRO 12 นิ้ว', total: 1, remaining: 1, unit: 'อัน', category: 'เครื่องมือ' },
+            { id: 18, name: 'ประแจหกเหลี่ยม HACHI (ชุด)', total: 1, remaining: 1, unit: 'ชุด', category: 'เครื่องมือ' },
+            { id: 19, name: 'เลื่อย Champion', total: 1, remaining: 1, unit: 'ปื้น', category: 'เครื่องมือ' },
+            { id: 20, name: 'ไขควงแบน Matall', total: 2, remaining: 2, unit: 'อัน', category: 'เครื่องมือ' },
+            { id: 21, name: 'ไขควงแฉก Mazdox', total: 1, remaining: 1, unit: 'อัน', category: 'เครื่องมือ' },
+            { id: 22, name: 'เครื่องเจียร BOSCH 4 นิ้ว', total: 1, remaining: 1, unit: 'เครื่อง', category: 'ไฟฟ้า' },
+            { id: 23, name: 'ชุดประแจ Stanley (14 อัน)', total: 1, remaining: 1, unit: 'ชุด', category: 'เครื่องมือ' },
+            { id: 24, name: 'ระดับน้ำ Stanley', total: 1, remaining: 1, unit: 'อัน', category: 'เครื่องมือ' },
+            { id: 25, name: 'ตลับเมตร Peng fuu', total: 1, remaining: 1, unit: 'อัน', category: 'เครื่องมือ' },
+            { id: 26, name: 'ถุงมือกันบาด Calling', total: 10, remaining: 1, unit: 'คู่', category: 'ความปลอดภัย' },
+            { id: 27, name: 'แว่นตา 3M', total: 5, remaining: 1, unit: 'อัน', category: 'ความปลอดภัย' },
+            { id: 28, name: 'สกรูเกลียวปล่อย เบอร์ 7', total: 100, remaining: 50, unit: 'ตัว', category: 'วัสดุ' },
+            { id: 29, name: 'พุกเบอร์ 7', total: 100, remaining: 50, unit: 'ตัว', category: 'วัสดุ' },
+            { id: 30, name: 'เทปพันเกลียว', total: 10, remaining: 1, unit: 'ม้วน', category: 'วัสดุ' },
+            { id: 31, name: 'เทปพันสายไฟ', total: 10, remaining: 1, unit: 'ม้วน', category: 'วัสดุ' },
+            { id: 32, name: 'เทปกาว 2 หน้า 3M', total: 5, remaining: 1, unit: 'ม้วน', category: 'วัสดุ' },
+            { id: 33, name: 'สายไฟ 1x1.5 (ฟ้า)', total: 1, remaining: 1, unit: 'ม้วน', category: 'วัสดุ' },
+            { id: 34, name: 'สายกราวด์ (เขียว-เหลือง)', total: 1, remaining: 1, unit: 'ม้วน', category: 'วัสดุ' },
+            { id: 35, name: 'หลอดไฟ LED T8 18.5W Racer', total: 20, remaining: 5, unit: 'หลอด', category: 'วัสดุ' }
+        ];
 
         // -------------------------------------------------------------------------
         // --- ICONS ---
@@ -102,6 +134,8 @@
         const Trophy = (p) => <IconBase {...p} d={<><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></>} />;
         const Leaf = (p) => <IconBase {...p} d={<><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/></>} />;
         const Package = (p) => <IconBase {...p} d={<><path d="m16.5 9.4-9-5.19"/><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></>} />;
+        const Plus = (p) => <IconBase {...p} d={<><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></>} />;
+        const Minus = (p) => <IconBase {...p} d={<><line x1="5" y1="12" x2="19" y2="12"></line></>} />;
 
         const GlobalStyles = () => (
             <style>{`
@@ -220,14 +254,12 @@
         );
 
         const ReportForm = ({ onSubmit, setView }) => {
-            // ✅ แก้ไขข้อ 2: จำค่าหน่วยงาน (reporter) ล่าสุดด้วย localStorage และป้องกันจอขาวด้วย try-catch logic ภายใน useState
             const [form, setForm] = useState(() => {
                 let savedReporter = ALL_DEPTS[0];
                 try { savedReporter = localStorage.getItem('depa_last_reporter') || ALL_DEPTS[0]; } catch(e) {}
                 return { reporter: savedReporter, description: '', urgency: 'normal' };
             });
 
-            // ✅ Save to localStorage whenever reporter changes
             useEffect(() => {
                 try { localStorage.setItem('depa_last_reporter', form.reporter); } catch(e) {}
             }, [form.reporter]);
@@ -322,7 +354,6 @@
         };
 
         const RequisitionForm = ({ onSubmit, requisitions, setView }) => {
-            // ✅ แก้ไขข้อ 3: Auto-Save ชื่อและแผนกล่าสุดในหน้าเบิกกระดาษ
             const [form, setForm] = useState(() => {
                 let savedName = '';
                 let savedDept = ALL_DEPTS[0];
@@ -367,7 +398,6 @@
             const rows = ALL_DEPTS.map(getRowData);
             return (
                 <div className="space-y-6 animate-in fade-in">
-                    {/* ✅ แก้ไขข้อ 1: ปรับ CSS ให้ปุ่ม Export ชิดขวา */}
                     <div className="flex justify-between items-center bg-white p-4 rounded-xl shadow-sm border border-gray-200">
                         <div className="font-bold text-gray-700 flex items-center gap-2"><FileText /> ระบบเบิกกระดาษ A4</div>
                         <Button variant="outline" icon={Download} onClick={onExport} className="text-sm py-2 ml-auto">Export CSV</Button>
@@ -377,6 +407,107 @@
                         <Card className="p-0 overflow-hidden h-[500px] flex flex-col"><div className="p-4 bg-gray-50 border-b font-bold flex justify-between items-center"><span>รายการเบิกล่าสุด</span><span className="text-xs text-gray-500">คลิกเพื่อเปลี่ยนสถานะ</span></div><div className="overflow-y-auto flex-1 p-2 space-y-2">{requisitions.sort((a,b) => b.timestamp - a.timestamp).map(req => (<div key={req.id} className="p-3 border rounded-lg flex justify-between items-center hover:bg-gray-50 transition-colors group"><div><div className="font-bold text-[#002D56]">{req.requester}</div><div className="text-xs text-gray-500">{req.department}</div><div className="text-xs text-gray-400 font-mono mt-1">{formatDate(req.timestamp)}</div></div><div className="text-right flex flex-col items-end gap-2"><div className="flex items-center gap-2"><span className="font-bold text-xl">{req.amount} รีม</span><button onClick={() => { if(confirm('ยืนยันลบรายการนี้?')) onDelete(req.id); }} className="text-gray-300 hover:text-red-500 transition-colors p-1" title="ลบรายการ"><Trash2 size={16}/></button></div><button onClick={() => { if(req.status === 'pending') onUpdateStatus(req.id, 'received'); }} className={`px-3 py-1 rounded-full text-xs font-bold border ${req.status === 'pending' ? 'bg-yellow-100 text-yellow-700 border-yellow-200 hover:bg-yellow-200' : 'bg-green-100 text-green-700 border-green-200 cursor-default'}`}>{req.status === 'pending' ? 'รอรับของ' : 'ได้รับแล้ว'}</button></div></div>))}</div></Card>
                         <Card className="p-0 overflow-hidden h-[500px] flex flex-col"><div className="p-4 bg-gray-50 border-b font-bold">สรุปโควต้าแยกหน่วยงาน</div><div className="overflow-y-auto flex-1"><table className="w-full text-left text-sm"><thead className="bg-gray-50 text-gray-500 font-bold sticky top-0"><tr><th className="p-3">หน่วยงาน</th><th className="p-3 text-center">ใช้ไป</th><th className="p-3 text-center">คงเหลือ (Group)</th></tr></thead><tbody className="divide-y">{rows.map((row, idx) => (<tr key={idx} className="hover:bg-gray-50"><td className="p-3 max-w-[200px] truncate" title={row.dept}>{row.dept}</td><td className="p-3 text-center font-bold">{row.individualUsed}</td><td className="p-3 text-center"><span className={`px-2 py-1 rounded font-bold ${row.remaining < 5 ? 'bg-red-100 text-red-600' : 'bg-green-100 text-green-600'}`}>{row.remaining}</span></td></tr>))}</tbody></table></div></Card>
                     </div>
+                </div>
+            );
+        };
+
+        // 📦 NEW: STOCK DASHBOARD COMPONENT
+        const StockDashboard = ({ stocks, onUpdateStock }) => {
+            const lowStockItems = stocks.filter(s => s.remaining <= 5);
+
+            return (
+                <div className="space-y-6 animate-in fade-in">
+                    {/* Summary Cards */}
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <Card className="p-6 border-l-8 border-l-[#002D56] flex items-center justify-between">
+                            <div>
+                                <p className="text-gray-500 font-medium mb-1">รายการอุปกรณ์ทั้งหมด</p>
+                                <h3 className="text-4xl font-bold text-[#002D56]">{stocks.length}</h3>
+                            </div>
+                            <div className="bg-blue-50 p-4 rounded-full text-[#002D56]"><HardHat size={32} /></div>
+                        </Card>
+                        <Card className="p-6 border-l-8 border-l-red-500 flex items-center justify-between">
+                            <div>
+                                <p className="text-gray-500 font-medium mb-1">ต้องเติมของ (Low Stock)</p>
+                                <h3 className="text-4xl font-bold text-red-600">{lowStockItems.length}</h3>
+                                <p className="text-xs text-red-400 mt-1">คงเหลือต่ำกว่า 5 หน่วย</p>
+                            </div>
+                            <div className="bg-red-50 p-4 rounded-full text-red-500"><AlertCircle size={32} /></div>
+                        </Card>
+                        <Card className="p-6 border-l-8 border-l-green-500 flex items-center justify-between">
+                             <div>
+                                <p className="text-gray-500 font-medium mb-1">หมวดหมู่ทั้งหมด</p>
+                                <h3 className="text-4xl font-bold text-green-600">{[...new Set(stocks.map(s => s.category))].length}</h3>
+                                <p className="text-xs text-gray-400 mt-1">ประเภทวัสดุ/อุปกรณ์</p>
+                            </div>
+                            <div className="bg-green-50 p-4 rounded-full text-green-500"><Package size={32} /></div>
+                        </Card>
+                    </div>
+
+                    {/* Stock List Table */}
+                    <Card className="overflow-hidden shadow-md border-0">
+                        <div className="p-4 bg-gray-50 border-b font-bold flex justify-between items-center">
+                            <span className="flex items-center gap-2"><List size={20}/> รายการพัสดุช่างอาคาร</span>
+                            <Button variant="outline" className="text-sm py-2 h-10" icon={Download}>Export Stock</Button>
+                        </div>
+                        <div className="overflow-x-auto">
+                            <table className="w-full text-left border-collapse min-w-[800px]">
+                                <thead className="bg-white text-gray-500 text-xs font-bold uppercase tracking-wider border-b border-gray-200">
+                                    <tr>
+                                        <th className="p-4">รายการ</th>
+                                        <th className="p-4 text-center">หมวดหมู่</th>
+                                        <th className="p-4 text-center">ทั้งหมด</th>
+                                        <th className="p-4 text-center">คงเหลือ</th>
+                                        <th className="p-4 text-center">สถานะ</th>
+                                        <th className="p-4 text-center">ปรับปรุงยอด</th>
+                                    </tr>
+                                </thead>
+                                <tbody className="divide-y divide-gray-100 bg-white">
+                                    {stocks.map(item => (
+                                        <tr key={item.id} className="hover:bg-gray-50 transition-colors">
+                                            <td className="p-4">
+                                                <div className="font-bold text-gray-800 text-base">{item.name}</div>
+                                                <div className="text-xs text-gray-400">ID: STK-{String(item.id).padStart(3,'0')}</div>
+                                            </td>
+                                            <td className="p-4 text-center">
+                                                <span className="bg-gray-100 text-gray-600 px-2 py-1 rounded text-xs">{item.category}</span>
+                                            </td>
+                                            <td className="p-4 text-center font-mono text-gray-500">{item.total} {item.unit}</td>
+                                            <td className="p-4 text-center">
+                                                <span className={`font-bold text-xl ${item.remaining <= 5 ? 'text-red-600' : 'text-[#002D56]'}`}>
+                                                    {item.remaining}
+                                                </span>
+                                            </td>
+                                            <td className="p-4 text-center">
+                                                {item.remaining === 0 ? (
+                                                    <span className="px-2 py-1 rounded-full text-xs font-bold bg-red-100 text-red-600 border border-red-200">หมดสต็อก</span>
+                                                ) : item.remaining <= 5 ? (
+                                                    <span className="px-2 py-1 rounded-full text-xs font-bold bg-orange-100 text-orange-600 border border-orange-200 animate-pulse">ใกล้หมด</span>
+                                                ) : (
+                                                    <span className="px-2 py-1 rounded-full text-xs font-bold bg-green-100 text-green-600 border border-green-200">ปกติ</span>
+                                                )}
+                                            </td>
+                                            <td className="p-4 text-center">
+                                                <div className="flex items-center justify-center gap-2">
+                                                    <button 
+                                                        onClick={() => onUpdateStock(item.id, -1)}
+                                                        className="w-8 h-8 rounded-full bg-red-50 text-red-600 hover:bg-red-500 hover:text-white transition-all flex items-center justify-center border border-red-200"
+                                                        disabled={item.remaining <= 0}
+                                                        title="เบิกของ"
+                                                    ><Minus size={16}/></button>
+                                                    <button 
+                                                        onClick={() => onUpdateStock(item.id, 1)}
+                                                        className="w-8 h-8 rounded-full bg-green-50 text-green-600 hover:bg-green-500 hover:text-white transition-all flex items-center justify-center border border-green-200"
+                                                        title="เติมของ"
+                                                    ><Plus size={16}/></button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                    </Card>
                 </div>
             );
         };
@@ -395,7 +526,7 @@
             );
         };
 
-        const AdminDashboard = ({ tickets, stats, requisitions, onStatusChange, onComplete, onExport, onDelete, onImport, onUpdateReqStatus, onDeleteReq, onExportReq, setView }) => {
+        const AdminDashboard = ({ tickets, stats, requisitions, stocks, onUpdateStock, onStatusChange, onComplete, onExport, onDelete, onImport, onUpdateReqStatus, onDeleteReq, onExportReq, setView }) => {
             const [tab, setTab] = useState('repair_tech'); const [completingId, setCompletingId] = useState(null); const [completionData, setCompletionData] = useState({ cause: '', fix: '' }); const [detailModal, setDetailModal] = useState(null); const [sortConfig, setSortConfig] = useState({ key: 'timestamps.created', direction: 'desc' }); const fileInputRef = useRef(null);
             const handleCompleteSubmit = () => { if (!completionData.cause || !completionData.fix) return alert('กรุณาระบุสาเหตุและวิธีแก้ไข'); onComplete(completingId, completionData); setCompletingId(null); setCompletionData({ cause: '', fix: '' }); };
             const handleSort = (key) => { let direction = 'asc'; if (sortConfig.key === key && sortConfig.direction === 'asc') direction = 'desc'; setSortConfig({ key, direction }); };
@@ -406,13 +537,38 @@
             return (
                 <div className="min-h-screen bg-gray-50 font-prompt pt-[85px]">
                     <div className="p-4 md:p-8 max-w-7xl mx-auto space-y-8">
-                        <div className="flex flex-col md:flex-row gap-4 items-center justify-between"><div className="flex flex-col md:flex-row gap-2 bg-white p-1.5 rounded-xl border border-gray-200 shadow-sm w-full md:w-auto"><button onClick={() => setTab('repair_tech')} className={`flex-1 md:flex-none px-6 py-2.5 rounded-lg text-sm md:text-base font-bold transition-all flex items-center justify-center gap-2 ${tab.startsWith('repair') ? 'bg-[#002D56] text-white shadow-md' : 'text-gray-500 hover:bg-gray-50'}`}><Wrench size={18}/> ระบบแจ้งซ่อม</button><button onClick={() => setTab('paper')} className={`flex-1 md:flex-none px-6 py-2.5 rounded-lg text-sm md:text-base font-bold transition-all flex items-center justify-center gap-2 ${tab === 'paper' ? 'bg-[#002D56] text-white shadow-md' : 'text-gray-500 hover:bg-gray-50'}`}><FileText size={18}/> ระบบเบิกกระดาษ</button></div></div>
-                        {tab.startsWith('repair') && (<div className="flex gap-4 border-b border-gray-200 pb-2 overflow-x-auto"><button onClick={() => setTab('repair_tech')} className={`px-4 py-2 text-sm font-bold border-b-2 transition-colors whitespace-nowrap ${tab === 'repair_tech' ? 'border-[#002D56] text-[#002D56]' : 'border-transparent text-gray-400 hover:text-gray-600'}`}>งานของช่าง {technicianTasks.length > 0 && <span className="bg-red-500 text-white text-[10px] px-1.5 rounded-full ml-1">{technicianTasks.length}</span>}</button><button onClick={() => setTab('repair_overview')} className={`px-4 py-2 text-sm font-bold border-b-2 transition-colors whitespace-nowrap ${tab === 'repair_overview' ? 'border-[#002D56] text-[#002D56]' : 'border-transparent text-gray-400 hover:text-gray-600'}`}>Dashboard ภาพรวม</button><button onClick={() => setTab('repair_list')} className={`px-4 py-2 text-sm font-bold border-b-2 transition-colors whitespace-nowrap ${tab === 'repair_list' ? 'border-[#002D56] text-[#002D56]' : 'border-transparent text-gray-400 hover:text-gray-600'}`}>รายการทั้งหมด</button></div>)}
+                        <div className="flex flex-col md:flex-row gap-4 items-center justify-between"><div className="flex flex-col md:flex-row gap-2 bg-white p-1.5 rounded-xl border border-gray-200 shadow-sm w-full md:w-auto">
+                            <button onClick={() => setTab('repair_tech')} className={`flex-1 md:flex-none px-6 py-2.5 rounded-lg text-sm md:text-base font-bold transition-all flex items-center justify-center gap-2 ${tab.startsWith('repair') ? 'bg-[#002D56] text-white shadow-md' : 'text-gray-500 hover:bg-gray-50'}`}><Wrench size={18}/> ระบบแจ้งซ่อม</button>
+                            <button onClick={() => setTab('paper')} className={`flex-1 md:flex-none px-6 py-2.5 rounded-lg text-sm md:text-base font-bold transition-all flex items-center justify-center gap-2 ${tab === 'paper' ? 'bg-[#002D56] text-white shadow-md' : 'text-gray-500 hover:bg-gray-50'}`}><FileText size={18}/> ระบบเบิกกระดาษ</button>
+                        </div></div>
+                        
+                        {/* 🔽 UPDATED TABS NAVIGATION */}
+                        {tab.startsWith('repair') || tab === 'stock' ? (
+                            <div className="flex gap-4 border-b border-gray-200 pb-2 overflow-x-auto">
+                                <button onClick={() => setTab('repair_tech')} className={`px-4 py-2 text-sm font-bold border-b-2 transition-colors whitespace-nowrap ${tab === 'repair_tech' ? 'border-[#002D56] text-[#002D56]' : 'border-transparent text-gray-400 hover:text-gray-600'}`}>
+                                    งานของช่าง {technicianTasks.length > 0 && <span className="bg-red-500 text-white text-[10px] px-1.5 rounded-full ml-1">{technicianTasks.length}</span>}
+                                </button>
+                                
+                                {/* ✅ NEW STOCK TAB ADDED HERE */}
+                                <button onClick={() => setTab('stock')} className={`px-4 py-2 text-sm font-bold border-b-2 transition-colors whitespace-nowrap ${tab === 'stock' ? 'border-[#002D56] text-[#002D56]' : 'border-transparent text-gray-400 hover:text-gray-600'}`}>
+                                    คลังอุปกรณ์ช่าง (Stock)
+                                </button>
+
+                                <button onClick={() => setTab('repair_overview')} className={`px-4 py-2 text-sm font-bold border-b-2 transition-colors whitespace-nowrap ${tab === 'repair_overview' ? 'border-[#002D56] text-[#002D56]' : 'border-transparent text-gray-400 hover:text-gray-600'}`}>Dashboard ภาพรวม</button>
+                                <button onClick={() => setTab('repair_list')} className={`px-4 py-2 text-sm font-bold border-b-2 transition-colors whitespace-nowrap ${tab === 'repair_list' ? 'border-[#002D56] text-[#002D56]' : 'border-transparent text-gray-400 hover:text-gray-600'}`}>รายการทั้งหมด</button>
+                            </div>
+                        ) : null}
+
                         {tab === 'repair_tech' && (<div className="animate-in fade-in space-y-4">{technicianTasks.length === 0 ? (<div className="text-center py-20 bg-white rounded-2xl border-2 border-dashed border-gray-200"><div className="bg-green-50 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4"><CheckCircle size={40} className="text-green-500" /></div><h3 className="text-xl font-bold text-gray-800">ไม่มีงานค้าง</h3><p className="text-gray-400">สุดยอด! คุณเคลียร์งานหมดแล้ว</p></div>) : (<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">{technicianTasks.map(t => (<Card key={t.id} className={`flex flex-col h-full shadow-lg border-l-4 ${t.urgency === 'urgent' ? 'border-l-red-500' : 'border-l-blue-500'}`}><div className="p-5 flex-1"><div className="flex justify-between items-start mb-3"><span className="font-mono text-sm font-bold text-gray-400">{t.id}</span>{getUrgencyBadge(t.urgency)}</div><h3 className="font-bold text-lg text-gray-800 mb-1">{t.location}</h3><p className="text-gray-600 text-base mb-3 line-clamp-3">{t.description}</p><div className="flex items-center gap-2 text-sm text-gray-400 mb-4"><User size={14}/> {t.reporter}<span>•</span><Clock size={14}/> {formatDate(t.timestamps.created)}</div>{t.image && (<div className="mb-4 rounded-lg overflow-hidden h-32 border bg-gray-50 relative group cursor-pointer" onClick={() => setDetailModal(t)}><img src={t.image} className="w-full h-full object-cover" /><div className="absolute inset-0 bg-black/20 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"><Eye className="text-white drop-shadow-md" size={24}/></div></div>)}</div><div className="p-4 bg-gray-50 border-t border-gray-100 mt-auto">{t.status === 'pending' && (<Button className="w-full h-12 text-lg shadow-sm" onClick={() => onStatusChange(t.id, 'acknowledged')}>รับเรื่อง</Button>)}{t.status === 'acknowledged' && (<Button className="w-full h-12 text-lg bg-blue-600 hover:bg-blue-700 shadow-blue-200" onClick={() => onStatusChange(t.id, 'in_progress')}>เริ่มดำเนินการ</Button>)}{t.status === 'in_progress' && (<Button className="w-full h-12 text-lg bg-green-600 hover:bg-green-700 shadow-green-200" onClick={() => setCompletingId(t.id)}><CheckCircle size={20} className="mr-2"/> ดำเนินการเสร็จสิ้น</Button>)}</div></Card>))}</div>)}</div>)}
+                        
+                        {/* 🔽 NEW STOCK DASHBOARD VIEW */}
+                        {tab === 'stock' && (
+                            <StockDashboard stocks={stocks} onUpdateStock={onUpdateStock} />
+                        )}
+
                         {tab === 'repair_overview' && (<div className="space-y-6 animate-in fade-in"><div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6"><Card className="p-5 bg-gradient-to-br from-[#002D56] to-[#004E8C] text-white border-none shadow-lg"><p className="text-blue-200 text-sm font-medium mb-1">ทั้งหมด</p><h3 className="text-4xl font-bold">{stats.total}</h3><div className="absolute right-0 bottom-0 opacity-10"><ClipboardList size={80}/></div></Card><Card className="p-5 border-l-8 border-l-[#002D56]"><p className="text-gray-500 text-sm font-medium mb-1">เสร็จสิ้น</p><h3 className="text-3xl font-bold text-[#002D56]">{stats.completed}</h3><p className="text-xs text-gray-400 mt-1">{stats.total > 0 ? ((stats.completed/stats.total)*100).toFixed(0) : 0}% Success Rate</p></Card><Card className="p-5 border-l-8 border-l-purple-500"><p className="text-gray-500 text-sm font-medium mb-1">ระยะเวลาเฉลี่ย/งาน</p><h3 className="text-3xl font-bold text-purple-600">{stats.avgTime}</h3><p className="text-xs text-gray-400 mt-1">จากงานที่เสร็จสิ้นแล้ว</p></Card><Card className="p-5 border-l-8 border-l-red-500"><p className="text-gray-500 text-sm font-medium mb-1">งานด่วน</p><h3 className="text-3xl font-bold text-red-600">{stats.urgentCount}</h3></Card></div>{renderGraphs()}</div>)}
                         {tab === 'repair_list' && (
                             <div className="animate-in fade-in pb-12">
-                                {/* ✅ แก้ไขข้อ 1: ปรับ CSS ให้ปุ่ม Export ชิดขวา */}
                                 <div className="flex flex-col md:flex-row justify-between mb-4 gap-4">
                                     <div className="flex gap-2">
                                         <input type="file" ref={fileInputRef} onChange={onImport} className="hidden" accept=".xlsx, .xls, .csv" />
@@ -437,6 +593,9 @@
             const [requisitions, setRequisitions] = useState([]);
             const [currentTicket, setCurrentTicket] = useState(null);
             const [loading, setLoading] = useState(false);
+            
+            // ✅ STOCK STATE
+            const [stocks, setStocks] = useState(INITIAL_STOCK_DATA);
 
             const fetchRepairData = async () => { if (REPAIR_API_URL.includes("YOUR_")) return; try { const res = await fetch(REPAIR_API_URL); const data = await res.json(); if(Array.isArray(data)) setTickets(data.reverse()); } catch (e) { console.error("Repair API Error", e); } };
             const fetchPaperData = async () => { if (PAPER_API_URL.includes("YOUR_")) { setRequisitions([{ id: 'REQ-001', requester: 'สมชาย', department: 'ฝ่ายส่งเสริมเมืองอัจฉริยะ', amount: 5, status: 'received', timestamp: Date.now() - 10000000 }, { id: 'REQ-002', requester: 'วิภา', department: 'ส่วนการเงินและบัญชี', amount: 10, status: 'pending', timestamp: Date.now() - 5000000 }]); return; } try { const res = await fetch(PAPER_API_URL); const data = await res.json(); if(Array.isArray(data)) setRequisitions(data.reverse()); } catch (e) { console.error("Paper API Error", e); } };
@@ -450,6 +609,18 @@
             const handleDeleteJob = (ticketId) => { setTickets(prev => prev.filter(t => t.id !== ticketId)); backgroundSync(REPAIR_API_URL, { action: 'delete', ticket: { id: ticketId } }); };
             const handleUpdateReqStatus = (id, status) => { const target = requisitions.find(r => r.id === id); if(!target) return; const updatedReq = { ...target, status }; setRequisitions(prev => prev.map(r => r.id === id ? updatedReq : r)); backgroundSync(PAPER_API_URL, { action: 'update', ticket: updatedReq }); };
             const handleDeleteReq = (id) => { setRequisitions(prev => prev.filter(r => r.id !== id)); backgroundSync(PAPER_API_URL, { action: 'delete', ticket: { id } }); };
+            
+            // ✅ HANDLE STOCK UPDATE
+            const handleUpdateStock = (id, amount) => {
+                setStocks(prev => prev.map(item => {
+                    if (item.id === id) {
+                        const newRemaining = Math.max(0, item.remaining + amount);
+                        return { ...item, remaining: newRemaining };
+                    }
+                    return item;
+                }));
+            };
+
             const exportToCSV = () => { const BOM = "\uFEFF"; const headers = "Ticket ID,หน่วยงาน,สถานที่,ระดับความเร่งด่วน,รายละเอียด,สถานะ,วันที่แจ้ง,สาเหตุ,วิธีแก้ไข\n"; const rows = tickets.map(t => `${t.id},"${t.reporter}",${t.location},${t.urgency},"${t.description.replace(/"/g, '""')}",${getStatusLabel(t.status)},${formatDate(t.timestamps.created)},"${t.resolution?.cause || '-'}", "${t.resolution?.fix || '-'}"`).join("\n"); const blob = new Blob([BOM + headers + rows], { type: 'text/csv;charset=utf-8;' }); const url = URL.createObjectURL(blob); const link = document.createElement('a'); link.href = url; link.setAttribute('download', `depa_repair_data_${new Date().toISOString().split('T')[0]}.csv`); document.body.appendChild(link); link.click(); document.body.removeChild(link); };
             const exportPaperToCSV = () => { const BOM = "\uFEFF"; const headers = "ID,ผู้เบิก,ฝ่าย/หน่วยงาน,จำนวน(รีม),สถานะ,วันที่เบิก\n"; const rows = requisitions.map(r => `${r.id},"${r.requester}","${r.department}",${r.amount},${r.status === 'pending' ? 'รอรับของ' : 'ได้รับแล้ว'},${formatDate(r.timestamp)}`).join("\n"); const blob = new Blob([BOM + headers + rows], { type: 'text/csv;charset=utf-8;' }); const url = URL.createObjectURL(blob); const link = document.createElement('a'); link.href = url; link.setAttribute('download', `depa_paper_requisition_${new Date().toISOString().split('T')[0]}.csv`); document.body.appendChild(link); link.click(); document.body.removeChild(link); };
             
@@ -474,7 +645,24 @@
                         {view === 'req_form' && <RequisitionForm onSubmit={handleRequisitionSubmit} requisitions={requisitions} setView={setView} />}
                         {view === 'req_success' && <SuccessScreen ticket={currentTicket} setView={setView} isRequisition={true} />}
                         {view === 'admin_login' && <AdminLogin onLogin={() => setView('admin_dashboard')} setView={setView} />}
-                        {view === 'admin_dashboard' && <AdminDashboard tickets={tickets} stats={stats} requisitions={requisitions} onStatusChange={handleStatusChange} onComplete={handleCompleteJob} onExport={exportToCSV} onDelete={handleDeleteJob} onImport={handleImportTickets} onUpdateReqStatus={handleUpdateReqStatus} onDeleteReq={handleDeleteReq} onExportReq={exportPaperToCSV} setView={setView} />}
+                        {view === 'admin_dashboard' && 
+                            <AdminDashboard 
+                                tickets={tickets} 
+                                stats={stats} 
+                                requisitions={requisitions} 
+                                onStatusChange={handleStatusChange} 
+                                onComplete={handleCompleteJob} 
+                                onExport={exportToCSV} 
+                                onDelete={handleDeleteJob} 
+                                onImport={handleImportTickets} 
+                                onUpdateReqStatus={handleUpdateReqStatus} 
+                                onDeleteReq={handleDeleteReq} 
+                                onExportReq={exportPaperToCSV}
+                                stocks={stocks}
+                                onUpdateStock={handleUpdateStock} 
+                                setView={setView} 
+                            />
+                        }
                     </main>
                 </div>
             );
@@ -485,7 +673,3 @@
     </script>
 </body>
 </html>
-
-
-
-
