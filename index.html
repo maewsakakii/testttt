@@ -67,7 +67,7 @@
         ];
 
         const ALL_DEPTS = [...DEPT_GROUP_A, ...DEPT_GROUP_B].sort((a, b) => a.localeCompare(b, 'th'));
-        const REPAIR_DEPTS = ["แม่บ้าน", ...ALL_DEPTS];
+        const REPAIR_DEPTS = [...ALL_DEPTS, "แม่บ้าน"];
 
         const QUOTA_LIMITS = { GROUP_A: 40, GROUP_B_TOTAL: 400 };
 
@@ -485,6 +485,7 @@
     </script>
 </body>
 </html>
+
 
 
 
