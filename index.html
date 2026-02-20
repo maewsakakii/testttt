@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>depa fga-gf Service </title>
+    <title>depa Service Portal</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
@@ -52,7 +52,7 @@
             "ส่วนส่งเสริมการลงทุน", "สถาบันส่งเสริมวิสาหกิจดิจิทัลเริ่มต้น", "ฝ่ายส่งเสริมและสนับสนุนการพัฒนาการเกษตรสมัยใหม่",
             "ฝ่ายส่งเสริมและสนับสนุนการพัฒนาชุมชน", "ฝ่ายส่งเสริมและสนับสนุนการพัฒนาอุตสาหกรรมและธุรกิจ", "ส่วนเทคโนโลยีดิจิทัลและสารสนเทศ",
             "ส่วนบริหารและพัฒนาบุคคล", "ฝ่ายนโยบายและยุทธศาสตร์", "ฝ่ายส่งเสริมและสนับสนุนการพัฒนาคุณภาพชีวิตและความมั่นคง",
-            "สาขาภาคกลางตอนกลาง", "แผนกบริหารไทยแลนด์ดิจิทัลวัลเลย์และกิจการ", "แผนกบริหารการลงทุนและกองทุน"
+            "กิจการสาขา", "แผนกบริหารไทยแลนด์ดิจิทัลวัลเลย์และกิจการ", "แผนกบริหารการลงทุนและกองทุน"
         ];
         const DEPT_GROUP_B = [
             "ส่วนกฎหมาย", "ส่วนประชาสัมพันธ์และสื่อสารองค์กร", "ส่วนเลขานุการและสารบรรณ",
@@ -186,18 +186,15 @@
             return <button onClick={onClick} className={`${baseStyle} ${variants[variant]} ${className}`} disabled={disabled}>{Icon && <Icon size={18} className="md:w-6 md:h-6" />}{children}</button>;
         };
 
-        // 🆕 IMPROVED: Cleaner Loading Spinner (No Text)
         const LoadingOverlay = () => (
             <div className="loading-overlay">
                 <div className="relative flex flex-col items-center">
-                    {/* Double Ring Spinner */}
                     <div className="w-16 h-16 border-4 border-gray-100 border-t-[#002D56] rounded-full animate-spin"></div>
                     <div className="absolute top-0 left-0 w-16 h-16 border-4 border-transparent border-b-[#FFD600] rounded-full animate-spin [animation-duration:1.5s]"></div>
                 </div>
             </div>
         );
 
-        // 🆕 UPDATED: Smart Header with Admin Support
         const DepaHeaderBar = ({ view, setView, onLogout }) => (
             <nav className="bg-white/95 backdrop-blur-sm border-b border-gray-200 shadow-sm fixed top-0 left-0 right-0 z-50 h-[80px] flex items-center px-4 md:px-8 justify-between transition-all">
                 <div className="flex items-center gap-4 cursor-pointer hover:opacity-90 transition-opacity" onClick={() => view !== 'admin_dashboard' && setView('portal')}>
@@ -206,12 +203,11 @@
                     <div className="flex flex-col justify-center">
                         <span className="text-[#002D56] font-bold text-lg md:text-xl leading-none">Service Portal</span>
                         <span className="text-gray-500 text-xs font-medium">
-                            {view === 'admin_dashboard' ? <span className="text-[#002D56] font-bold bg-yellow-100 px-1 rounded">Admin Center</span> : 'ส่วนบริการกลางและพัสดุ'}
+                            {view === 'admin_dashboard' ? <span className="text-[#002D56] font-bold bg-yellow-100 px-1 rounded">Admin Center</span> : 'บริการกลางและพัสดุ'}
                         </span>
                     </div>
                 </div>
 
-                {/* Show Logout button ONLY in Admin Dashboard */}
                 {view === 'admin_dashboard' && (
                     <button 
                         onClick={onLogout} 
@@ -411,13 +407,11 @@
             );
         };
 
-        // 📦 NEW: STOCK DASHBOARD COMPONENT
         const StockDashboard = ({ stocks, onUpdateStock }) => {
             const lowStockItems = stocks.filter(s => s.remaining <= 5);
 
             return (
                 <div className="space-y-6 animate-in fade-in">
-                    {/* Summary Cards */}
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                         <Card className="p-6 border-l-8 border-l-[#002D56] flex items-center justify-between">
                             <div>
@@ -444,7 +438,6 @@
                         </Card>
                     </div>
 
-                    {/* Stock List Table */}
                     <Card className="overflow-hidden shadow-md border-0">
                         <div className="p-4 bg-gray-50 border-b font-bold flex justify-between items-center">
                             <span className="flex items-center gap-2"><List size={20}/> รายการพัสดุช่างอาคาร</span>
@@ -514,7 +507,14 @@
 
         const AdminLogin = ({ onLogin, setView }) => {
             const [pass, setPass] = useState('');
-            const handleLogin = () => { if (btoa(pass) === 'Q1MyNTY4') { onLogin(); } else { alert('รหัสผ่านผิด'); }};
+            const handleLogin = () => { 
+                if (btoa(pass) === 'Q1MyNTY4') { 
+                    localStorage.setItem('depa_admin_logged_in', 'true');
+                    onLogin(); 
+                } else { 
+                    alert('รหัสผ่านผิด'); 
+                }
+            };
             return (
                 <div className="flex items-center justify-center min-h-screen bg-gray-100 p-4 pt-24 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')]">
                     <Card className="w-full max-w-sm p-8 space-y-6 shadow-xl border-t-4 border-[#002D56] flex flex-col items-center">
@@ -542,14 +542,12 @@
                             <button onClick={() => setTab('paper')} className={`flex-1 md:flex-none px-6 py-2.5 rounded-lg text-sm md:text-base font-bold transition-all flex items-center justify-center gap-2 ${tab === 'paper' ? 'bg-[#002D56] text-white shadow-md' : 'text-gray-500 hover:bg-gray-50'}`}><FileText size={18}/> ระบบเบิกกระดาษ</button>
                         </div></div>
                         
-                        {/* 🔽 UPDATED TABS NAVIGATION */}
                         {tab.startsWith('repair') || tab === 'stock' ? (
                             <div className="flex gap-4 border-b border-gray-200 pb-2 overflow-x-auto">
                                 <button onClick={() => setTab('repair_tech')} className={`px-4 py-2 text-sm font-bold border-b-2 transition-colors whitespace-nowrap ${tab === 'repair_tech' ? 'border-[#002D56] text-[#002D56]' : 'border-transparent text-gray-400 hover:text-gray-600'}`}>
                                     งานของช่าง {technicianTasks.length > 0 && <span className="bg-red-500 text-white text-[10px] px-1.5 rounded-full ml-1">{technicianTasks.length}</span>}
                                 </button>
                                 
-                                {/* ✅ NEW STOCK TAB ADDED HERE */}
                                 <button onClick={() => setTab('stock')} className={`px-4 py-2 text-sm font-bold border-b-2 transition-colors whitespace-nowrap ${tab === 'stock' ? 'border-[#002D56] text-[#002D56]' : 'border-transparent text-gray-400 hover:text-gray-600'}`}>
                                     คลังอุปกรณ์ช่าง (Stock)
                                 </button>
@@ -561,7 +559,6 @@
 
                         {tab === 'repair_tech' && (<div className="animate-in fade-in space-y-4">{technicianTasks.length === 0 ? (<div className="text-center py-20 bg-white rounded-2xl border-2 border-dashed border-gray-200"><div className="bg-green-50 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4"><CheckCircle size={40} className="text-green-500" /></div><h3 className="text-xl font-bold text-gray-800">ไม่มีงานค้าง</h3><p className="text-gray-400">สุดยอด! คุณเคลียร์งานหมดแล้ว</p></div>) : (<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">{technicianTasks.map(t => (<Card key={t.id} className={`flex flex-col h-full shadow-lg border-l-4 ${t.urgency === 'urgent' ? 'border-l-red-500' : 'border-l-blue-500'}`}><div className="p-5 flex-1"><div className="flex justify-between items-start mb-3"><span className="font-mono text-sm font-bold text-gray-400">{t.id}</span>{getUrgencyBadge(t.urgency)}</div><h3 className="font-bold text-lg text-gray-800 mb-1">{t.location}</h3><p className="text-gray-600 text-base mb-3 line-clamp-3">{t.description}</p><div className="flex items-center gap-2 text-sm text-gray-400 mb-4"><User size={14}/> {t.reporter}<span>•</span><Clock size={14}/> {formatDate(t.timestamps.created)}</div>{t.image && (<div className="mb-4 rounded-lg overflow-hidden h-32 border bg-gray-50 relative group cursor-pointer" onClick={() => setDetailModal(t)}><img src={t.image} className="w-full h-full object-cover" /><div className="absolute inset-0 bg-black/20 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"><Eye className="text-white drop-shadow-md" size={24}/></div></div>)}</div><div className="p-4 bg-gray-50 border-t border-gray-100 mt-auto">{t.status === 'pending' && (<Button className="w-full h-12 text-lg shadow-sm" onClick={() => onStatusChange(t.id, 'acknowledged')}>รับเรื่อง</Button>)}{t.status === 'acknowledged' && (<Button className="w-full h-12 text-lg bg-blue-600 hover:bg-blue-700 shadow-blue-200" onClick={() => onStatusChange(t.id, 'in_progress')}>เริ่มดำเนินการ</Button>)}{t.status === 'in_progress' && (<Button className="w-full h-12 text-lg bg-green-600 hover:bg-green-700 shadow-green-200" onClick={() => setCompletingId(t.id)}><CheckCircle size={20} className="mr-2"/> ดำเนินการเสร็จสิ้น</Button>)}</div></Card>))}</div>)}</div>)}
                         
-                        {/* 🔽 NEW STOCK DASHBOARD VIEW */}
                         {tab === 'stock' && (
                             <StockDashboard stocks={stocks} onUpdateStock={onUpdateStock} />
                         )}
@@ -588,18 +585,68 @@
         };
 
         const DepaRepairSystem = () => {
-            const [view, setView] = useState('portal');
+            // ฟังก์ชันเช็ค URL และคืนค่า View ที่ถูกต้องตอนโหลดเว็บครั้งแรก
+            const getInitialView = () => {
+                const path = window.location.pathname;
+                const isAdmin = localStorage.getItem('depa_admin_logged_in') === 'true';
+                if (path.startsWith('/admin')) return isAdmin ? 'admin_dashboard' : 'admin_login';
+                if (path.startsWith('/paper')) return 'req_form';
+                if (path.startsWith('/report')) return 'report';
+                if (path.startsWith('/track')) return 'track';
+                return 'portal';
+            };
+
+            const [view, setViewRaw] = useState(getInitialView);
+            
+            // ฟังก์ชัน setView ที่เปลี่ยน View และอัปเดต URL ไปพร้อมกัน
+            const setView = (newView) => {
+                setViewRaw(newView);
+                let newPath = '/';
+                if (newView === 'admin_dashboard' || newView === 'admin_login') newPath = '/admin';
+                else if (newView === 'req_form' || newView === 'req_success') newPath = '/paper';
+                else if (newView === 'report' || newView === 'success') newPath = '/report';
+                else if (newView === 'track') newPath = '/track';
+                
+                // อัปเดต URL bar โดยไม่ให้เว็บโหลดใหม่
+                if (window.location.pathname !== newPath) {
+                    window.history.pushState({ view: newView }, '', newPath);
+                }
+            };
+
+            // ดักจับเวลาผู้ใช้กดปุ่ม Back/Forward บน Browser ให้ทำงานถูกต้อง
+            useEffect(() => {
+                const handlePopState = () => setViewRaw(getInitialView());
+                window.addEventListener('popstate', handlePopState);
+                return () => window.removeEventListener('popstate', handlePopState);
+            }, []);
+
+            // ฟังก์ชันสำหรับออกจากระบบ (ลบ Token)
+            const handleAdminLogout = () => {
+                localStorage.removeItem('depa_admin_logged_in');
+                setView('portal');
+            };
+
             const [tickets, setTickets] = useState([]);
             const [requisitions, setRequisitions] = useState([]);
             const [currentTicket, setCurrentTicket] = useState(null);
             const [loading, setLoading] = useState(false);
-            
-            // ✅ STOCK STATE
             const [stocks, setStocks] = useState(INITIAL_STOCK_DATA);
 
             const fetchRepairData = async () => { if (REPAIR_API_URL.includes("YOUR_")) return; try { const res = await fetch(REPAIR_API_URL); const data = await res.json(); if(Array.isArray(data)) setTickets(data.reverse()); } catch (e) { console.error("Repair API Error", e); } };
             const fetchPaperData = async () => { if (PAPER_API_URL.includes("YOUR_")) { setRequisitions([{ id: 'REQ-001', requester: 'สมชาย', department: 'ฝ่ายส่งเสริมเมืองอัจฉริยะ', amount: 5, status: 'received', timestamp: Date.now() - 10000000 }, { id: 'REQ-002', requester: 'วิภา', department: 'ส่วนการเงินและบัญชี', amount: 10, status: 'pending', timestamp: Date.now() - 5000000 }]); return; } try { const res = await fetch(PAPER_API_URL); const data = await res.json(); if(Array.isArray(data)) setRequisitions(data.reverse()); } catch (e) { console.error("Paper API Error", e); } };
-            useEffect(() => { setLoading(true); Promise.all([fetchRepairData(), fetchPaperData()]).finally(() => setLoading(false)); }, []);
+            
+            // ตั้งค่า Auto-Refresh ข้อมูลเงียบๆ ทุกๆ 15 วินาที
+            useEffect(() => { 
+                setLoading(true); 
+                const loadAllData = () => Promise.all([fetchRepairData(), fetchPaperData()]);
+                loadAllData().finally(() => setLoading(false)); 
+                
+                const intervalId = setInterval(() => {
+                    loadAllData();
+                }, 15000);
+                
+                return () => clearInterval(intervalId);
+            }, []);
             
             const backgroundSync = (url, payload) => { if (url.includes("YOUR_")) return; fetch(url, { method: 'POST', mode: 'no-cors', keepalive: true, body: JSON.stringify(payload) }).catch(e => console.error("Sync failed", e)); };
             const handleReportSubmit = (formData) => { const newId = generateId(tickets); const newTicket = { id: newId, ...formData, status: 'pending', timestamps: { created: Date.now() }, resolution: null }; setTickets([newTicket, ...tickets]); setCurrentTicket(newTicket); setView('success'); backgroundSync(REPAIR_API_URL, { action: 'create', ticket: newTicket }); };
@@ -610,7 +657,6 @@
             const handleUpdateReqStatus = (id, status) => { const target = requisitions.find(r => r.id === id); if(!target) return; const updatedReq = { ...target, status }; setRequisitions(prev => prev.map(r => r.id === id ? updatedReq : r)); backgroundSync(PAPER_API_URL, { action: 'update', ticket: updatedReq }); };
             const handleDeleteReq = (id) => { setRequisitions(prev => prev.filter(r => r.id !== id)); backgroundSync(PAPER_API_URL, { action: 'delete', ticket: { id } }); };
             
-            // ✅ HANDLE STOCK UPDATE
             const handleUpdateStock = (id, amount) => {
                 setStocks(prev => prev.map(item => {
                     if (item.id === id) {
@@ -626,7 +672,6 @@
             
             const handleImportTickets = (e) => { alert("Import Excel ในโหมด Online จะแสดงผลเฉพาะหน้าจอนี้ (ไม่ได้บันทึกลง Database ถาวร)"); const file = e.target.files[0]; if (!file) return; const reader = new FileReader(); reader.onload = (evt) => { const bstr = evt.target.result; const wb = XLSX.read(bstr, { type: 'binary' }); const wsname = wb.SheetNames[0]; const ws = wb.Sheets[wsname]; const data = XLSX.utils.sheet_to_json(ws); const imported = data.map(row => { let status = 'pending'; if (row['สถานะ'] === 'รับเรื่องแล้ว') status = 'acknowledged'; if (row['สถานะ'] === 'กำลังซ่อม') status = 'in_progress'; if (row['สถานะ'] === 'เสร็จสิ้น') status = 'completed'; return { id: row['Ticket ID'] || generateId(tickets), reporter: row['ผู้แจ้ง'] || 'Imported', location: row['สถานที่'] || '-', description: row['รายละเอียด'] || '-', urgency: row['ระดับความเร่งด่วน'] === 'เร่งด่วน' ? 'urgent' : 'normal', status: status, timestamps: { created: row['วันที่แจ้ง'] ? new Date(row['วันที่แจ้ง']).getTime() : Date.now() }, resolution: (row['สาเหตุ'] || row['วิธีแก้ไข']) ? { cause: row['สาเหตุ'] || '-', fix: row['วิธีแก้ไข'] || '-' } : null, }; }); setTickets(prev => [...prev, ...imported]); }; reader.readAsBinaryString(file); };
 
-            // Stats calculation (Repair only)
             const stats = useMemo(() => { const total = tickets.length; const completed = tickets.filter(t => t.status === 'completed').length; const pending = tickets.filter(t => t.status === 'pending').length; const urgentCount = tickets.filter(t => t.urgency === 'urgent').length; const statusData = [ { name: 'รอดำเนินการ', value: pending }, { name: 'รับเรื่องแล้ว', value: tickets.filter(t => t.status === 'acknowledged').length }, { name: 'กำลังซ่อม', value: tickets.filter(t => t.status === 'in_progress').length }, { name: 'เสร็จสิ้น', value: completed }, ]; const urgencyData = [ { name: 'ทั่วไป', value: total - urgentCount }, { name: 'เร่งด่วน', value: urgentCount }, ]; const locationDataMap = {}; tickets.forEach(t => { const locStr = String(t.location || ''); const floor = locStr.split(' - ')[0] || 'Other'; locationDataMap[floor] = (locationDataMap[floor] || 0) + 1; }); const floorOrder = { 'G': 0, '1': 1, '2': 2, '3': 3, '4': 4, '5': 5, 'R': 6 }; const locationData = Object.keys(locationDataMap).map(k => ({ name: k, count: locationDataMap[k] })).sort((a, b) => { const orderA = floorOrder[a.name] !== undefined ? floorOrder[a.name] : 99; const orderB = floorOrder[b.name] !== undefined ? floorOrder[b.name] : 99; return orderA - orderB; }); let totalDurationMs = 0; let completedCountWithTime = 0; tickets.forEach(t => { if (t.status === 'completed' && t.timestamps.completed && t.timestamps.created) { totalDurationMs += (t.timestamps.completed - t.timestamps.created); completedCountWithTime++; } }); let avgTime = '-'; if (completedCountWithTime > 0) { const avgMs = totalDurationMs / completedCountWithTime; const hrs = Math.floor(avgMs / (1000 * 60 * 60)); const mins = Math.floor((avgMs % (1000 * 60 * 60)) / (1000 * 60)); avgTime = `${hrs} ชม. ${mins} นาที`; } const reporterMap = {}; tickets.forEach(t => { const name = t.reporter ? t.reporter.trim() : 'Unknown'; reporterMap[name] = (reporterMap[name] || 0) + 1; }); const leaderboard = Object.keys(reporterMap).map(name => ({ name, count: reporterMap[name] })).sort((a, b) => b.count - a.count).slice(0, 5); return { total, completed, pending, urgentCount, statusData, urgencyData, locationData, avgTime, leaderboard }; }, [tickets]);
 
             return (
@@ -634,8 +679,7 @@
                     <GlobalStyles />
                     {loading && <LoadingOverlay />}
                     
-                    {/* Fixed Header Bar */}
-                    <DepaHeaderBar view={view} setView={setView} onLogout={() => setView('portal')} />
+                    <DepaHeaderBar view={view} setView={setView} onLogout={handleAdminLogout} />
 
                     <main>
                         {view === 'portal' && <PortalPage setView={setView} />}
@@ -673,4 +717,3 @@
     </script>
 </body>
 </html>
-
